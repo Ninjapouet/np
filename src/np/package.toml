@@ -1,0 +1,6 @@
+gen-version = "version.ml"
+kind = "library"
+name = "np"
+skeleton = "library"
+[dependencies]
+base64 = ""
