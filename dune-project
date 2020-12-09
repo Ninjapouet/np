@@ -32,3 +32,32 @@
    odoc
    ocamlformat
  ))
+
+(package
+ (name np-lwt)
+ (synopsis "The np project")
+ (description "This is the description\nof the np OCaml project\n")
+ (depends
+   (ocaml (>= 4.10.0))
+   (np (= version))
+   lwt
+   ppx_inline_test
+   ppx_expect
+   odoc
+   ocamlformat
+ ))
+
+(package
+ (name np-lwt-unix)
+ (synopsis "The np project")
+ (description "This is the description\nof the np OCaml project\n")
+ (depends
+   (ocaml (>= 4.10.0))
+   (np-unix (= version))
+   (np-lwt (= version))
+   lwt
+   ppx_inline_test
+   ppx_expect
+   odoc
+   ocamlformat
+ ))

@@ -58,3 +58,9 @@ dir = "src/np"
 [[package]]
 dir = "src/np-unix"
 
+[[package]]
+dir = "src/np-lwt"
+
+[[package]]
+dir = "src/np-lwt-unix"
+

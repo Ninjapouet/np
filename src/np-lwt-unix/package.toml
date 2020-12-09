@@ -1,0 +1,10 @@
+kind = "library"
+name = "np-lwt-unix"
+
+[dependencies]
+np-lwt = "version"
+np-unix = "version"
+lwt = ""
+
+[fields]
+dune-libraries = "lwt.unix"

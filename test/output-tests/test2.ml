@@ -77,3 +77,59 @@ let () =
          ()) in
 
   close ()
+
+
+let () =
+  (* lwt tests *)
+  let open Np_lwt.Main in
+  let open Np.Run.Syntax(Run) in
+  Lwt_main.run begin
+
+    (* streams *)
+    let wo, stream, close = wo_stream () in
+    let ro = ro_stream stream in
+    let* () = write wo "Coucou!" in
+    let* msg = read ro in
+    Fmt.pr "%s@." msg;
+    let* () = close () in
+
+    (* udp *)
+    let open Np_lwt_unix.Main in
+    let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
+    let* close = UDP.server sockaddr
+        (fun buffer io ->
+           let* n, peer = read io in
+           let msg = Bytes.sub_string buffer 0 n in
+           Fmt.pr "%s@." msg;
+           Bytes.blit_string "pong" 0 buffer 0 4;
+           let* () = write io (4, peer) in
+           Lwt.return_unit) in
+    let* () = UDP.client sockaddr
+        (fun buffer io ->
+           Bytes.blit_string "ping" 0 buffer 0 4;
+           let* () = write io (4, sockaddr) in
+           let* n, _ = read io in
+           Fmt.pr "%s@." (Bytes.sub_string buffer 0 n);
+           Lwt.return_unit) in
+    let* () = close () in
+
+    (* tcp *)
+    let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
+    let* close = TCP.server sockaddr
+        (fun _ buffer io ->
+           let* n = read io in
+           let msg = Bytes.sub_string buffer 0 n in
+           Fmt.pr "%s@." msg;
+           Bytes.blit_string "pong" 0 buffer 0 4;
+           let* () = write io 4 in
+           Lwt.return_unit) in
+    let* () = TCP.client sockaddr
+        (fun buffer io ->
+           Bytes.blit_string "ping" 0 buffer 0 4;
+           let* () = write io 4 in
+           let* n = read io in
+           Fmt.pr "%s@." (Bytes.sub_string buffer 0 n);
+           Lwt.return_unit) in
+    close ()
+
+  end

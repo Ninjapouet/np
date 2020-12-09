@@ -1,0 +1,5 @@
+kind = "library"
+name = "np-lwt"
+[dependencies]
+lwt = ""
+np = "version"

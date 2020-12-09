@@ -1,9 +1,7 @@
 kind = "library"
 name = "np-unix"
-
 [dependencies]
-np = "version"
 fmt = ""
-
+np = "version"
 [fields]
 dune-libraries = "threads"

@@ -18,7 +18,7 @@ module type io = sig
   val ro : (unit -> 'a run) -> ('a, _, r) t
   val wo : ('a -> unit run) -> (_, 'a, w) t
   val rw : (unit -> 'a run) -> ('b -> unit run) -> ('a, 'b, rw) t
-
+  val pack : ('a, _, _ readable) t -> (_, 'b, _ writable) t -> ('a, 'b, rw) t
   val restrict_ro : ('a, 'b, rw) t -> ('a, 'b, r) t
   val restrict_wo : ('a, 'b, rw) t -> ('a, 'b, w) t
 
@@ -44,6 +44,9 @@ module Make (R : run) : io with type 'a run = 'a R.t = struct
   let ro read = {read; write = fun _ -> assert false}
   let wo write = {read = (fun () -> assert false); write}
   let rw read write = {read; write}
+
+  let pack : ('a, _, _ readable) t -> (_, 'b, _ writable) t -> ('a, 'b, rw) t = fun r w ->
+    {read = r.read; write = w.write}
 
   let restrict_ro : ('a, 'b, rw) t -> ('a, 'b, r) t = fun io ->
     {read = io.read; write = io.write}

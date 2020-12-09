@@ -17,7 +17,7 @@
 
 (executable
  (name test2)
- (libraries np np-unix) ; add your own library here
+ (libraries np np-unix np-lwt np-lwt-unix) ; add your own library here
  )
 
 (alias
