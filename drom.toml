@@ -11,14 +11,14 @@ min-edition = "4.10.0"
 mode = "binary"
 name = "np"
 synopsis = "The np project"
-version = "0.1.0-rc3"
+version = "0.1.0-rc4"
 windows-ci = true
 
 # keys that you could also define:
 # build-profile = "...build-profile..."
 # odoc-target = "...odoc-target..."
 # sphinx-target = "...sphinx-target..."
-archive = "https://github.com/Ninjapouet/np/archive/v${version}.tar.gz"
+archive = "https://github.com/Ninjapouet/np/archive/${version}.tar.gz"
 # dev-repo = "...dev-repo..."
 # bug-reports = "...bug-reports..."
 # doc-api = "...doc-api..."
