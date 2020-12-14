@@ -11,7 +11,7 @@ min-edition = "4.10.0"
 mode = "binary"
 name = "np"
 synopsis = "The np project"
-version = "0.1.0-rc1"
+version = "v0.1.0-rc2"
 windows-ci = true
 
 # keys that you could also define:
