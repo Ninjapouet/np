@@ -4,7 +4,7 @@
   (name np_lwt)
   (public_name np-lwt)
   (wrapped true)
-  (libraries np lwt )
+  (libraries np-unix np lwt )
   
   
   )

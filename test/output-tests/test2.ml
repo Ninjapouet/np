@@ -1,6 +1,6 @@
 
 open Np.Io
-open Np_unix.Main
+open Np_unix.Net
 
 let read_k io k = let v = read io in k v; v
 
@@ -35,101 +35,92 @@ let () =
   read_int m |> ignore
 
 let () =
-  (* tcp *)
-  let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12345)) in
-  let close = TCP.server sockaddr
-      (fun _ buffer io ->
-         let n = read_int io in
-         let msg = Bytes.sub_string buffer 0 n in
-         Fmt.pr "%s@." msg;
-         Bytes.blit_string "pong" 0 buffer 0 4;
-         write io 4) in
-  (* Unix.sleep 1; *)
-  let _ = TCP.client sockaddr
-      (fun buffer io ->
-         Bytes.blit_string "ping" 0 buffer 0 4;
-         write io 4 |> ignore;
-         let n = read_int io in
-         Fmt.pr "%s@." (Bytes.sub_string buffer 0 n)) in
-  (* Unix.sleep 1; *)
-  close ()(* ;
-   * Unix.unlink file *)
-
-let () =
   (* udp *)
   let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
-
-  let read io = read_k io (fun (i, _) -> Fmt.pr "%i@." i) in
-  let close = UDP.server sockaddr
-      (fun buffer io ->
-         let n, peer = read io in
+  let _ = UDP.server sockaddr
+      (fun io ->
+         let buffer, n, peer = read io in
          let msg = Bytes.sub_string buffer 0 n in
-         Fmt.pr "%s@." msg;
-         Bytes.blit_string "pong" 0 buffer 0 4;
-         write io (4, peer);
+         Fmt.pr "< %s@." msg;
+         let pong = Bytes.of_string "pong" in
+         write io (pong, 4, peer);
          ()) in
-  let _ = UDP.client sockaddr
-      (fun buffer io ->
-         Bytes.blit_string "ping" 0 buffer 0 4;
-         write io (4, sockaddr) |> ignore;
-         let n, _ = read io in
-         Fmt.pr "%s@." (Bytes.sub_string buffer 0 n);
+  let () = UDP.client sockaddr
+      (fun io ->
+         let ping = Bytes.of_string "ping" in
+         write io (ping, 4, sockaddr) |> ignore;
+         let buffer, n, _ = read io in
+         Fmt.pr "> %s@." (Bytes.sub_string buffer 0 n);
          ()) in
-
-  close ()
-
+  ()
 
 let () =
+  (* tcp *)
+  let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12345)) in
+  let close = TCP.server ~opts:[Reuseaddr true] sockaddr
+      (fun _ io ->
+         let buffer, n = read io in
+         let msg = Bytes.sub_string buffer 0 n in
+         Fmt.pr "< %s@." msg;
+         write io (Bytes.of_string "pong", 4);
+      ) in
+  let _ = TCP.client sockaddr
+      (fun io ->
+         write io (Bytes.of_string "ping", 4);
+         let buffer, n = read io in
+         Fmt.pr "> %s@." (Bytes.sub_string buffer 0 n);
+      ) in
+  close ()
+
+ let () =
   (* lwt tests *)
-  let open Np_lwt.Main in
-  let open Np.Run.Syntax(Run) in
-  Lwt_main.run begin
+   let open Np_lwt in
+   let open Np.Run.Syntax(Run) in
+   let open Io in
+   Lwt_main.run begin
 
-    (* streams *)
-    let wo, stream, close = wo_stream () in
-    let ro = ro_stream stream in
-    let* () = write wo "Coucou!" in
-    let* msg = read ro in
-    Fmt.pr "%s@." msg;
-    let* () = close () in
+     (* streams *)
+     let wo, stream = wo_stream () in
+     let ro = ro_stream stream in
+     let* () = write wo "Coucou!" in
+     let* msg = read ro in
+     Fmt.pr "%s@." msg;
 
-    (* udp *)
-    let open Np_lwt_unix.Main in
-    let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
-    let* close = UDP.server sockaddr
-        (fun buffer io ->
-           let* n, peer = read io in
-           let msg = Bytes.sub_string buffer 0 n in
-           Fmt.pr "%s@." msg;
-           Bytes.blit_string "pong" 0 buffer 0 4;
-           let* () = write io (4, peer) in
-           Lwt.return_unit) in
-    let* () = UDP.client sockaddr
-        (fun buffer io ->
-           Bytes.blit_string "ping" 0 buffer 0 4;
-           let* () = write io (4, sockaddr) in
-           let* n, _ = read io in
-           Fmt.pr "%s@." (Bytes.sub_string buffer 0 n);
-           Lwt.return_unit) in
-    let* () = close () in
+     (* udp *)
+     let open Np_lwt_unix.Net in
+     let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
+     let* kill = UDP.server ~opts:[Reuseaddr true] sockaddr
+         (fun io ->
+            let* buffer, n, peer = read io in
+            let msg = Bytes.sub_string buffer 0 n in
+            Fmt.pr "< %s@." msg;
+            let* () = write io (Bytes.of_string "pong", 4, peer) in
+            Lwt.return_unit) in
+     let* () = UDP.client sockaddr
+         (fun io ->
+            let* () = write io (Bytes.of_string "ping", 4, sockaddr) in
+            let* buffer, n, _ = read io in
+            Fmt.pr "> %s@." (Bytes.sub_string buffer 0 n);
+            Lwt.return_unit) in
+     kill ();
 
-    (* tcp *)
-    let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
-    let* close = TCP.server sockaddr
-        (fun _ buffer io ->
-           let* n = read io in
-           let msg = Bytes.sub_string buffer 0 n in
-           Fmt.pr "%s@." msg;
-           Bytes.blit_string "pong" 0 buffer 0 4;
-           let* () = write io 4 in
-           Lwt.return_unit) in
-    let* () = TCP.client sockaddr
-        (fun buffer io ->
-           Bytes.blit_string "ping" 0 buffer 0 4;
-           let* () = write io 4 in
-           let* n = read io in
-           Fmt.pr "%s@." (Bytes.sub_string buffer 0 n);
-           Lwt.return_unit) in
-    close ()
 
-  end
+     (* tcp *)
+     let sockaddr = Unix.(ADDR_INET (inet_addr_loopback, 12346)) in
+     let* kill = TCP.server ~opts:[Reuseaddr true] sockaddr
+         (fun _ io ->
+            let* buffer, n = read io in
+            let msg = Bytes.sub_string buffer 0 n in
+            Fmt.pr "< %s@." msg;
+            let* () = write io (Bytes.of_string "pong", 4) in
+            Lwt.return_unit) in
+     let* () = TCP.client sockaddr
+         (fun io ->
+            let* () = write io (Bytes.of_string "ping", 4) in
+            let* buffer, n = read io in
+            Fmt.pr "> %s@." (Bytes.sub_string buffer 0 n);
+            Lwt.return_unit) in
+     let () = kill () in
+
+     Lwt.return_unit
+   end

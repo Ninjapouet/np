@@ -3,3 +3,4 @@ name = "np-lwt"
 [dependencies]
 lwt = ""
 np = "version"
+np-unix = "version"

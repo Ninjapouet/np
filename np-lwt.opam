@@ -33,6 +33,7 @@ build: [
 depends: [
   "ocaml" {>= "4.10.0"}
   "dune" {>= "2.6.0"}
+  "np-unix" {= version}
   "np" {= version}
   "lwt" {}
   "ppx_inline_test" {with-test}

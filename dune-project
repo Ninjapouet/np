@@ -12,7 +12,8 @@
  (description "This is the description\nof the np OCaml project\n")
  (depends
    (ocaml (>= 4.10.0))
-   base64
+   (fmt (and (>= 0.8.9) (< 1.0.0)))
+   (base64 (and (>= 3.4.0) (< 4.0.0)))
    ppx_inline_test
    ppx_expect
    odoc
@@ -39,6 +40,7 @@
  (description "This is the description\nof the np OCaml project\n")
  (depends
    (ocaml (>= 4.10.0))
+   (np-unix (= version))
    (np (= version))
    lwt
    ppx_inline_test
@@ -55,6 +57,7 @@
    (ocaml (>= 4.10.0))
    (np-unix (= version))
    (np-lwt (= version))
+   (lwt_react (and (>= 1.1.3) (< 2.0.0)))
    lwt
    ppx_inline_test
    ppx_expect

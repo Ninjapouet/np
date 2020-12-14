@@ -4,7 +4,7 @@
   (name np)
   (public_name np)
   (wrapped true)
-  (libraries base64 )
+  (libraries fmt base64 )
   
   
   )

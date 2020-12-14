@@ -33,7 +33,8 @@ build: [
 depends: [
   "ocaml" {>= "4.10.0"}
   "dune" {>= "2.6.0"}
-  "base64" {}
+  "fmt" {>= "0.8.9" & < "1.0.0"}
+  "base64" {>= "3.4.0" & < "4.0.0"}
   "ppx_inline_test" {with-test}
   "ppx_expect" {with-test}
   "odoc" {with-doc}

@@ -4,16 +4,12 @@ SGVsbG8gV29ybGQh
 Hello World!
 hJWmvgAAAAEAAAAAAAAAAAAAAABq
 42
-4
-ping
-4
-pong
-4
-ping
-4
-pong
+< ping
+> pong
+< ping
+> pong
 Coucou!
-ping
-pong
-ping
-pong
+< ping
+> pong
+< ping
+> pong

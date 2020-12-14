@@ -3,4 +3,5 @@ kind = "library"
 name = "np"
 skeleton = "library"
 [dependencies]
-base64 = ""
+base64 = "3.4.0"
+fmt = "0.8.9"

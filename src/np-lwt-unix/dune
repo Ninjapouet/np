@@ -4,7 +4,7 @@
   (name np_lwt_unix)
   (public_name np-lwt-unix)
   (wrapped true)
-  (libraries np-unix np-lwt lwt lwt.unix)
+  (libraries np-unix np-lwt lwt_react lwt lwt.unix)
   
   
   )
