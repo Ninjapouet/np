@@ -100,6 +100,7 @@ module TCP = struct
     let run () = match run () with
       | () -> ()
       | exception Unix.Unix_error (EINVAL, _, _) -> () (* connection closed *)
+      | exception Unix.Unix_error (ECONNABORTED, "accept", _) -> () (* connection closed *)
       | exception e -> Fmt.pr "unix:tcp:server: %a@." Fmt.exn e in
     let _ = Thread.create run () in
     close

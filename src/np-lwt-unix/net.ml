@@ -102,6 +102,7 @@ module TCP = struct
         (fun () -> run ())
         (function
           | Unix.Unix_error (EBADF, _, _) -> Lwt.return_unit (* closed socket *)
+          | Unix.Unix_error (ECONNABORTED, "accept", _) -> Lwt.return_unit (* closed socket *)
           | e -> Fmt.pr "lwt:tcp:server: %a@." Fmt.exn e; Lwt.return_unit) in
     let terminate () =
       let* () = E.next kill in
