@@ -1,3 +1,36 @@
+open React
+
+open Component
+
+module Readable = struct
+
+  class virtual ['a, 'e, 's] interface = object
+    inherit ['e, 's] Component.interface
+    method virtual read : 's -> 'a event
+  end
+
+  module type S = sig
+    type data
+    type error
+    type t
+    val interface : (data, error, t) interface
+  end
+
+  let make : type a b c. (a, b, c) #interface ->
+    (module S with type data = a
+               and type error = b
+               and type t = c) = fun iface ->
+    let module M = struct
+      type data = a
+      type error = b
+      type t = c
+      let interface = (iface :> (data, error, t) interface)
+    end in
+    (module M)
+
+end
+
+
 open Run
 
 exception EOI

@@ -3,22 +3,22 @@
 ; a first example where we would test the behavior of one of the executables
 ; that we generate else-where
 
-(rule
- (with-stdout-to
-  test1.output
-  (run cat test1.expected)))
+; (rule
+;  (with-stdout-to
+;   test1.output
+;   (run cat test1.expected)))
 
-(rule
- (alias runtest)
- (action
-  (diff test1.expected test1.output)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff test1.expected test1.output)))
 
 ; a second example where we generate a file and test its output
 
 (executable
  (name test2)
  (libraries np np-unix np-lwt np-lwt-unix) ; add your own library here
- )
+ (preprocess (pps lwt_ppx)))
 
 (alias
  (name buildtest)

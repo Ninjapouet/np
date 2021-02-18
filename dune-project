@@ -3,7 +3,7 @@
 (name np)
 (allow_approximate_merlin)
 (generate_opam_files false)
-(version 0.1.0)
+(version 0.1.0-rc4)
 (formatting (enabled_for ocaml reason))
 
 (package
@@ -12,12 +12,16 @@
  (description "This is the description\nof the np OCaml project\n")
  (depends
    (ocaml (>= 4.10.0))
+   (react (and (>= 1.2.1) (< 2.0.0)))
+   (lwt_react (and (>= 1.1.4) (< 2.0.0)))
+   (lwt (and (>= 5.4.0) (< 6.0.0)))
    (fmt (and (>= 0.8.9) (< 1.0.0)))
    (base64 (and (>= 3.4.0) (< 4.0.0)))
    ppx_inline_test
    ppx_expect
    odoc
    ocamlformat
+   (lwt_ppx (and (>= 2.0.2) (< 3.0.0)))
  ))
 
 (package
@@ -32,6 +36,7 @@
    ppx_expect
    odoc
    ocamlformat
+   (lwt_ppx (and (>= 2.0.2) (< 3.0.0)))
  ))
 
 (package
@@ -47,6 +52,7 @@
    ppx_expect
    odoc
    ocamlformat
+   (lwt_ppx (and (>= 2.0.2) (< 3.0.0)))
  ))
 
 (package
@@ -63,4 +69,6 @@
    ppx_expect
    odoc
    ocamlformat
+   (lwt_ppx (and (>= 2.0.2) (< 3.0.0)))
  ))
+

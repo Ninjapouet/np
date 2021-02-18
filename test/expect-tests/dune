@@ -3,7 +3,7 @@
 (library
  (name lib_expect_tests)
  (preprocess
-  (pps ppx_expect))
+  (pps ppx_expect lwt_ppx))
  (inline_tests
   (modes best)) ; add js for testing with nodejs
  (libraries np np-unix np-lwt np-lwt-unix) ; add your project libraries here

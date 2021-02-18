@@ -4,12 +4,18 @@
   (name np)
   (public_name np)
   (wrapped true)
-  (libraries fmt base64 )
+  (libraries react lwt_react lwt fmt base64 lwt.unix)
   
-  
+  (preprocess (pps lwt_ppx))
   )
 
 
+(rule
+    (targets version.ml)
+    (deps (:script version.mlt) package.toml)
+    (action (with-stdout-to %{targets} (run %{ocaml} unix.cma %{script}))))
+
 (documentation
   (package np))
+
 

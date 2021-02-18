@@ -44,6 +44,8 @@ for-doc = true
 for-test = true
 [tools.ppx_inline_test]
 for-test = true
+[tools.lwt_ppx]
+version = "2.0.2"
 
 [project]
 generators = ["ocamllex", "ocamlyacc"]
